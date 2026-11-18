@@ -1,74 +1,91 @@
-# CNN-Based Image Denoising
+# Intelligent Image Denoising Using CNNs
 
-A comparative image-denoising project evaluating a **Basic CNN** and **DnCNN** on synthetic Gaussian, salt-and-pepper, and speckle noise.
+A research and implementation project for image denoising with convolutional neural networks. The project explores three synthetic noise types—Gaussian, salt-and-pepper, and speckle—and compares a Basic CNN with DnCNN. The latest local project bundle also includes a multi-label noise detector and a Streamlit interface for automatic detection/restoration and manual noise-generation experiments.
+
+> **Repository synchronization status:** This GitHub repository currently contains the project documentation and dependency metadata, but it does not yet contain the latest application source, `src/` modules, evaluation outputs, or trained checkpoints. The complete local project archive is being reviewed before those files are synchronized. Do not treat this repository as runnable until that synchronization is complete.
+
+## Project objectives
+
+- Generate and study Gaussian, salt-and-pepper, and speckle noise.
+- Compare direct image prediction (Basic CNN) with residual learning (DnCNN).
+- Detect the presence of supported noise types using a multi-label CNN detector.
+- Restore images through a Streamlit application.
+- Evaluate denoising quality using mean squared error (MSE), peak signal-to-noise ratio (PSNR), and structural similarity (SSIM).
+
+## Implemented model families
+
+### Basic CNN
+
+The project’s Basic CNN uses four convolutional layers with channel progression 3 → 32 → 64 → 32 → 3. ReLU activations are used in the intermediate layers, with a sigmoid output. The network predicts the clean image directly. Nine checkpoints are used for the combinations of three noise types and three severity levels.
+
+### DnCNN
+
+The DnCNN model uses a 17-layer residual-learning architecture with 64 feature channels. It estimates the noise residual and returns the restored image by subtracting that residual from the noisy input. Three checkpoints are used, one for each supported noise family.
+
+### Multi-label noise detector
+
+The latest local application includes a detector trained to identify Gaussian, salt-and-pepper, and speckle noise. Its predictions are used to select the corresponding DnCNN restoration stages. Detection confidence is not equivalent to a calibrated probability unless calibration has been separately evaluated.
+
+## Evaluation
+
+The supplied local results include an evaluation across 100 DIV2K validation images, three noise families, three severity settings, and two denoising approaches (1,800 model predictions). The current summary reports mean PSNR of 23.6174 dB for Basic CNN and 34.2023 dB for DnCNN, and mean SSIM of 0.7740 and 0.9184 respectively.
+
+These values are preliminary project results, not independently reproduced benchmarks. The comparison is between the trained systems rather than a controlled architecture-only comparison: the Basic CNN and DnCNN used different training durations and training procedures. The evaluation uses synthetic noise and resized 128 × 128 inputs, so the findings should not be generalized directly to real camera noise or arbitrary-resolution images.
+
+Inference-time values are intentionally omitted from headline results until the timing methodology and units are revalidated.
+
+## Local setup
+
+The commands below describe the intended setup once the application source and checkpoints have been synchronized:
+
+```bash
+git clone https://github.com/Navadeep-Bandi/image-denoising-cnn.git
+cd image-denoising-cnn
+
+python -m venv .venv
+# Windows:
+.venv\\Scripts\\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+pip install -r requirements.txt
+python -m streamlit run app.py
+```
+
+The complete application requires the source modules under `src/` and the trained model files under `models/`. The DIV2K dataset is not included in the project archive or repository; download it separately from its official source if you need to reproduce dataset-based evaluation, and follow the dataset's terms.
+
+## Expected project structure
+
+```text
+image-denoising-cnn/
+├── app.py
+├── requirements.txt
+├── src/
+│   ├── common.py
+│   ├── model.py
+│   ├── dncnn_model.py
+│   ├── noise.py
+│   └── evaluation and verification scripts
+├── models/                 # trained .pth / .pt checkpoints
+├── results/                # CSV metrics and comparison figures
+└── dataset/                # not committed
+```
+
+## Reproducibility and interpretation notes
+
+- Basic CNN and DnCNN are trained systems with different training configurations; observed differences cannot be attributed solely to architecture.
+- The evaluation uses synthetic noise, not a representative collection of real-world camera-noise conditions.
+- Inputs in the reported 100-image evaluation were resized to 128 × 128.
+- Salt-and-pepper corruption is sparse at the tested severities; interpret its PSNR alongside the corruption density and visual comparisons.
+- Model confidence scores should not be described as calibrated probabilities without a calibration study.
+- Report hardware, software versions, random seeds, image preprocessing, and timing protocol when publishing runtime comparisons.
 
 ## Team
+
 - Bandi Navadeep
 - Rajan Nayak
 - Rohit
 
-## Project status
-The Streamlit application has been run successfully by the team, and all **9 noise-type × severity combinations** have been tested. The evaluation covers 2 architectures × 3 noise types × 3 severity levels, using 100 DIV2K validation images per combination (1,800 model predictions).
+## License
 
-## Features
-- Upload an image and synthesize a selected noise type and severity.
-- Run the same noisy input through Basic CNN and DnCNN.
-- Compare original, noisy, and denoised images.
-- Report MSE, PSNR, and SSIM.
-- Download denoised outputs.
-
-## Architectures
-**Basic CNN:** four 3×3 convolution layers (3→32→64→32→3), ReLU after the first three layers, sigmoid output. It predicts the clean image directly.
-
-**DnCNN:** depth 17 with 64 feature channels. It predicts the noise residual and subtracts it from the noisy input (residual learning).
-
-## Evaluation results
-
-Mean over the 9 noise/severity combinations (100 validation images per combination):
-
-| Metric | Basic CNN | DnCNN |
-|---|---:|---:|
-| Average PSNR (dB) | 23.6174 | 34.2023 |
-| Average SSIM | 0.7740 | 0.9184 |
-
-DnCNN achieved higher PSNR and SSIM in all nine evaluated combinations. See [results/all_models_summary.csv](results/all_models_summary.csv) for the full breakdown.
-
-## Run locally
-
-1. Clone this repository.
-2. Create and activate a Python virtual environment.
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Place the project checkpoints in the `models/` directory and the DIV2K validation images in `dataset/DIV2K_valid_HR/` if running the evaluation script.
-5. Run the Streamlit app:
-   ```bash
-   python -m streamlit run app.py
-   ```
-
-> **Important:** The current repository setup documentation is being prepared. The working `app.py`, source scripts, and checkpoint files must be added to this repository before the clone-and-run instructions are complete. The DIV2K dataset is not included; obtain it from the official dataset source and follow its terms.
-
-## Evaluation
-
-The all-model evaluation script is `src/evaluate_all_models.py`. Its reported CSV outputs are in `results/`. The experiment evaluates 100 validation images at 128×128 resolution for each of the 18 model/noise/severity combinations.
-
-## Methodology notes and limitations
-- This is a comparison of the two **trained systems**, not a controlled experiment isolating architecture alone: the Basic CNN was trained for 2 epochs, while DnCNN was trained for 40 epochs using a different training procedure.
-- DnCNN training used a mixed-noise strategy, while evaluation applied one noise type at a time.
-- The validation set uses synthetic noise and resized images; real-world camera noise may behave differently.
-- Inference-time values in the original CSV are implausibly small and are not reported as reliable timing results.
-- The unusually high DnCNN PSNR for salt-and-pepper noise should be interpreted alongside the sparse corruption pattern and global image-level MSE/PSNR calculation.
-
-## Repository layout
-```
-app.py                 # Streamlit application (to be committed)
-src/                   # model, noise, and evaluation scripts
-models/                # trained model checkpoints
-results/               # evaluation CSVs and comparison figures
-dataset/               # DIV2K validation images (not committed)
-requirements.txt
-```
-
-## Authors
-Bandi Navadeep, Rajan Nayak, and Rohit.
+No license has been specified yet. Until a license is added, all rights remain with the repository owner; do not assume the code is open for reuse.
