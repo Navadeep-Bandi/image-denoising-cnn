@@ -3,6 +3,7 @@ torch
 torchvision
 numpy
 Pillow
+opencv-python
 scikit-image
 pandas
 matplotlib
