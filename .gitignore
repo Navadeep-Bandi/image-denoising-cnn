@@ -8,3 +8,15 @@ Thumbs.db
 dataset/
 *.log
 .streamlit/secrets.toml
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.tmp
+*.temp
+*.swp
+*~
+results/write_test.txt
+results/**/*_before_correction.csv.csv
+*.csv.csv

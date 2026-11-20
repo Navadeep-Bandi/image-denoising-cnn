@@ -1,0 +1,4 @@
+label,precision,recall,f1,accuracy
+gaussian,1.0,1.0,1.0,1.0
+sp,1.0,1.0,1.0,1.0
+speckle,1.0,1.0,1.0,1.0

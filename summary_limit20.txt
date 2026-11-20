@@ -1,0 +1,67 @@
+# Limit-20 experiment summary
+
+## Provenance and scope
+
+- The supplied experiment CSVs contain exactly 20 distinct image names: `0801.png` through `0820.png` (inclusive).
+- The local runner defaults to seed `42` and accepts `--device cuda`; however, the uploaded bundle does not include a run log proving the exact command, selected device, software versions, or checkpoint hashes for these CSVs. The requested “seed 42 / CUDA” provenance is therefore not independently verified from the files supplied.
+- Tables below are regenerated from the per-image CSVs in this archive and replace the stale aggregates previously written in this text file.
+- The DIV2K dataset is not included. Model checkpoints are present in the local ZIP but are not included in this GitHub sync.
+
+## EXP1 — Blending comparison
+
+| Configuration | PSNR | SSIM | Seam discontinuity | Mean inference (s) |
+|---|---:|---:|---:|---:|
+| A_no_overlap | 36.7670 | 0.894486 | 0.027988 | 0.515563 |
+| B_uniform_25pct | 36.9545 | 0.897156 | 0.026084 | 0.866379 |
+| C_hann_25pct | 37.0285 | 0.898711 | 0.025736 | 0.865261 |
+
+## EXP2 — Boundary vs. interior
+
+| Noise | Boundary PSNR | Interior PSNR | Δ PSNR (I−B) | Boundary SSIM | Interior SSIM | Δ SSIM (I−B) |
+|---|---:|---:|---:|---:|---:|---:|
+| gaussian | 30.7357 | 30.8058 | 0.0701 | 0.800381 | 0.798087 | -0.002295 |
+| sp | 47.3002 | 47.3506 | 0.0504 | 0.993993 | 0.993768 | -0.000225 |
+| speckle | 32.9307 | 33.0663 | 0.1356 | 0.902046 | 0.902340 | 0.000295 |
+
+## EXP3 — Overlap sweep
+
+| Overlap | Pixels | Stride | Patches/image | PSNR | SSIM | PSNR gain vs 0% | Mean inference (s) |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0% | 0 | 128 | 179.2 | 36.7670 | 0.894486 | 0.0000% | 0.473746 |
+| 12.5% | 16 | 112 | 237.5 | 37.0091 | 0.898187 | 0.6171% | 0.617736 |
+| 25% | 32 | 96 | 304.5 | 37.0285 | 0.898711 | 0.6705% | 0.790538 |
+| 37.5% | 48 | 80 | 435.0 | 37.0287 | 0.898754 | 0.6717% | 1.119878 |
+| 50% | 64 | 64 | 660.3 | 37.0289 | 0.898753 | 0.6720% | 1.685953 |
+
+## EXP4 — Efficiency
+
+| Configuration | PSNR | SSIM | Mean (s) | Median (s) | P95 (s) | Images/s | CPU RSS (MiB) | GPU peak (MiB) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1_basic_cnn | 24.6125 | 0.746600 | 0.247063 | 0.247063 | 0.247063 | 4.0892 | 1838.7 | 37.16 |
+| 2_dncnn_no_overlap | 36.7670 | 0.894486 | 0.462628 | 0.462628 | 0.462628 | 2.1752 | 1764.3 | 39.36 |
+| 3_dncnn_uniform_25pct | 36.9545 | 0.897156 | 0.785417 | 0.785417 | 0.785417 | 1.2820 | 1790.9 | 39.36 |
+| 4_dncnn_hann_25pct | 37.0285 | 0.898711 | 0.792234 | 0.792234 | 0.792234 | 1.2728 | 1791.1 | 39.36 |
+| 5_auto_pipeline | 37.0285 | 0.898711 | 1.129467 | 1.129467 | 1.129467 | 0.9068 | 1859.9 | 39.54 |
+
+## EXP5 — Restoration quality
+
+| Noise | Noisy PSNR | Restored PSNR | Δ PSNR | Noisy SSIM | Restored SSIM | Δ SSIM | Mean inference (s) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| gaussian | 21.3103 | 30.7685 | 9.4581 | 0.383684 | 0.799842 | 0.416158 | 1.484290 |
+| sp | 20.9620 | 47.3233 | 26.3613 | 0.562246 | 0.993940 | 0.431695 | 1.513992 |
+| speckle | 21.6753 | 32.9939 | 11.3186 | 0.498970 | 0.902352 | 0.403382 | 1.491738 |
+
+### Detector metrics
+
+| Label | Precision | Recall | F1 | Accuracy |
+|---|---:|---:|---:|---:|
+| gaussian | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| sp | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| speckle | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+
+## Artifact notes
+
+- Per-image CSVs are in `results/experiments/exp1` through `exp5`; the supplied files contain 540, 180, 900, 900, and 180 rows respectively (plus aggregate CSVs).
+- PNG plots and `preflight_checkpoint_sha256.json` are present in the local ZIP but were not transferred in this GitHub text-file sync.
+- The actual `0801.png`–`0820.png` image files are not in the ZIP; only those filenames are present in the result CSVs.
+- The requested revised DOCX research paper and HTML presentation were not present among the uploaded files and cannot be committed from this bundle.
