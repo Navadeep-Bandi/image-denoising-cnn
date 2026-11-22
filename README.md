@@ -1,91 +1,101 @@
-# Intelligent Image Denoising Using CNNs
+# Noise-Adaptive Image Denoising with Overlap-Weighted Patch Reconstruction
 
-A research and implementation project for image denoising with convolutional neural networks. The project explores three synthetic noise types—Gaussian, salt-and-pepper, and speckle—and compares a Basic CNN with DnCNN. The latest local project bundle also includes a multi-label noise detector and a Streamlit interface for automatic detection/restoration and manual noise-generation experiments.
+[![CI](https://github.com/Navadeep-Bandi/image-denoising-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/Navadeep-Bandi/image-denoising-cnn/actions/workflows/ci.yml)
 
-> **Repository synchronization status:** This GitHub repository currently contains the project documentation and dependency metadata, but it does not yet contain the latest application source, `src/` modules, evaluation outputs, or trained checkpoints. The complete local project archive is being reviewed before those files are synchronized. Do not treat this repository as runnable until that synchronization is complete.
+A PyTorch project that restores images corrupted by **Gaussian, salt-and-pepper or speckle noise**. A multi-label CNN detector
+estimates which noise types are present, noise-specific **DnCNN** denoisers remove them, and full-resolution images are
+rebuilt from 128x128 patches with **Hann-weighted overlap-add**. The repository contains the code, trained checkpoints,
+archived experiment results, a Streamlit app, a research paper (LaTeX) and presentation slides.
 
-## Project objectives
+```mermaid
+flowchart LR
+  A[Noisy RGB image] --> B[Multi-label noise detector<br/>threshold 0.50]
+  B --> C[SP DnCNN] --> D[Gaussian DnCNN] --> E[Speckle DnCNN] --> F[Restored image]
+  subgraph tiles [each stage: 128x128 patches, 32 px overlap, Hann overlap-add]
+  C
+  D
+  E
+  end
+```
 
-- Generate and study Gaussian, salt-and-pepper, and speckle noise.
-- Compare direct image prediction (Basic CNN) with residual learning (DnCNN).
-- Detect the presence of supported noise types using a multi-label CNN detector.
-- Restore images through a Streamlit application.
-- Evaluate denoising quality using mean squared error (MSE), peak signal-to-noise ratio (PSNR), and structural similarity (SSIM).
+## Key findings
 
-## Implemented model families
+Evaluated on DIV2K validation images 0801-0820 at full resolution, 3 noise families x 3 severities (180 cases), paired statistics:
 
-### Basic CNN
+| Question | Result |
+|---|---|
+| Hann 25% overlap vs no overlap | **+0.26 dB PSNR** (95% CI 0.23-0.29), better in 180/180 cases |
+| Hann vs uniform blending | +0.074 dB (better in 99% of cases) |
+| More overlap than 25%? | +0.0003 dB for 2.1x the time: **not worth it** |
+| Detector | 180/180 exact on single-noise cases; routing costs +0.34 s (+43%) with no quality loss |
+| Full pipeline | mean PSNR 21.32 -> 37.03 dB, SSIM 0.482 -> 0.899 |
+| Weak spots | Gaussian sigma >= 25/255; severity-specific Basic CNN worsens 43/180 cases at low noise |
 
-The project’s Basic CNN uses four convolutional layers with channel progression 3 → 32 → 64 → 32 → 3. ReLU activations are used in the intermediate layers, with a sigmoid output. The network predicts the clean image directly. Nine checkpoints are used for the combinations of three noise types and three severity levels.
+Full tables and failure cases: [`docs/RESULTS.md`](docs/RESULTS.md). These results use synthetic single-family noise on 20
+images; they do **not** show real-world or mixed-noise robustness, and the project makes no state-of-the-art claim.
 
-### DnCNN
-
-The DnCNN model uses a 17-layer residual-learning architecture with 64 feature channels. It estimates the noise residual and returns the restored image by subtracting that residual from the noisy input. Three checkpoints are used, one for each supported noise family.
-
-### Multi-label noise detector
-
-The latest local application includes a detector trained to identify Gaussian, salt-and-pepper, and speckle noise. Its predictions are used to select the corresponding DnCNN restoration stages. Detection confidence is not equivalent to a calibrated probability unless calibration has been separately evaluated.
-
-## Evaluation
-
-The supplied local results include an evaluation across 100 DIV2K validation images, three noise families, three severity settings, and two denoising approaches (1,800 model predictions). The current summary reports mean PSNR of 23.6174 dB for Basic CNN and 34.2023 dB for DnCNN, and mean SSIM of 0.7740 and 0.9184 respectively.
-
-These values are preliminary project results, not independently reproduced benchmarks. The comparison is between the trained systems rather than a controlled architecture-only comparison: the Basic CNN and DnCNN used different training durations and training procedures. The evaluation uses synthetic noise and resized 128 × 128 inputs, so the findings should not be generalized directly to real camera noise or arbitrary-resolution images.
-
-Inference-time values are intentionally omitted from headline results until the timing methodology and units are revalidated.
-
-## Local setup
-
-The commands below describe the intended setup once the application source and checkpoints have been synchronized:
+## Quick start
 
 ```bash
 git clone https://github.com/Navadeep-Bandi/image-denoising-cnn.git
 cd image-denoising-cnn
-
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
+# Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
-The complete application requires the source modules under `src/` and the trained model files under `models/`. The DIV2K dataset is not included in the project archive or repository; download it separately from its official source if you need to reproduce dataset-based evaluation, and follow the dataset's terms.
+Trained checkpoints are included in `models/`, so the app runs without any download.
 
-## Expected project structure
+## Reproduce the experiments
 
-```text
-image-denoising-cnn/
-├── app.py
-├── requirements.txt
-├── src/
-│   ├── common.py
-│   ├── model.py
-│   ├── dncnn_model.py
-│   ├── noise.py
-│   └── evaluation and verification scripts
-├── models/                 # trained .pth / .pt checkpoints
-├── results/                # CSV metrics and comparison figures
-└── dataset/                # not committed
+The DIV2K dataset is **not** included; download the validation HR images from the
+[official DIV2K page](https://data.vision.ee.ethz.ch/cvl/DIV2K/) into `dataset/DIV2K_valid_HR/`, then:
+
+```bash
+python run_all_experiments.py --limit 20 --device cuda      # experiments 1-5 (writes to results/experiments)
+cd paper/analysis && python make_tables.py                  # regenerate the paper's tables + paired statistics
 ```
 
-## Reproducibility and interpretation notes
+Individual experiments live in `src/evaluate_*.py`: blending (Exp. 1), boundaries (Exp. 2), overlap sweep (Exp. 3),
+efficiency (Exp. 4), noise detection and restoration (Exp. 5). The 100-image Basic CNN vs DnCNN comparison is
+`src/evaluate_all_models.py`.
 
-- Basic CNN and DnCNN are trained systems with different training configurations; observed differences cannot be attributed solely to architecture.
-- The evaluation uses synthetic noise, not a representative collection of real-world camera-noise conditions.
-- Inputs in the reported 100-image evaluation were resized to 128 × 128.
-- Salt-and-pepper corruption is sparse at the tested severities; interpret its PSNR alongside the corruption density and visual comparisons.
-- Model confidence scores should not be described as calibrated probabilities without a calibration study.
-- Report hardware, software versions, random seeds, image preprocessing, and timing protocol when publishing runtime comparisons.
+## Paper and slides
+
+* `paper/main.tex` - IEEE-format paper (upload `paper/` to Overleaf, compile twice). Tables are generated from the CSVs.
+  Search for `\todo{` for items the authors still need to fill in.
+* `slides/research_presentation.pptx` - 12-slide presentation following the course format.
+
+## Repository layout
+
+```text
+app.py                      Streamlit app (detect, restore, compare)
+run_all_experiments.py      runs experiments 1-5 and writes a consolidated summary
+src/                        models, noise generation, patch inference, evaluation scripts
+models/                     trained checkpoints (detector, 3 DnCNN, 9 Basic CNN)
+results/                    archived per-case CSVs and figures
+paper/                      LaTeX paper, generated tables, analysis scripts
+slides/                     presentation
+docs/                       RESULTS.md, TRAINING_PROTOCOL.md, archive/ (earlier drafts)
+```
+
+## Reproducibility and limitations
+
+* Timing is a **single run per case**, hardware and library versions were not recorded, and each experiment was timed in
+  its own pass; compare times within one table only.
+* The **training scripts are not in this repository** (see [`docs/TRAINING_PROTOCOL.md`](docs/TRAINING_PROTOCOL.md) for what
+  the shared code does specify). Optimizer, epochs and the origin of the clean training images are undocumented.
+* Dependencies are not version-pinned; checkpoint SHA-256 hashes are in `results/experiments/preflight_checkpoint_sha256.json`.
+* The Basic CNN and DnCNN were trained differently, so their gap is not an architecture-only comparison.
+* Detector scores are not calibrated probabilities.
+* No comparison against SwinIR, Restormer, NAFNet, PromptIR or MambaIR was run.
 
 ## Team
 
-- Bandi Navadeep
-- Rajan Nayak
-- Rohit
+Bandi Navadeep, Rajan Nayak, Rohit - Department of Artificial Intelligence and Data Science, IIIT Raichur.
 
 ## License
 
-No license has been specified yet. Until a license is added, all rights remain with the repository owner; do not assume the code is open for reuse.
+No license has been chosen yet, so all rights remain with the authors. Add a `LICENSE` file (for example MIT) if you want
+others to reuse the code.

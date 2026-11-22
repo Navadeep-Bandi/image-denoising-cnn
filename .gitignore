@@ -8,3 +8,12 @@ Thumbs.db
 dataset/
 *.log
 .streamlit/secrets.toml
+
+# data and build artefacts
+data/
+.venv/
+*.aux
+*.out
+*.synctex.gz
+paper/main.pdf
+paper/main.log

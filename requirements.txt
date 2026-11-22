@@ -1,9 +1,11 @@
-streamlit
 torch
 torchvision
+streamlit
 numpy
-Pillow
+scipy
+pillow
 opencv-python
 scikit-image
-pandas
 matplotlib
+pandas
+psutil
