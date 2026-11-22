@@ -1,0 +1,15 @@
+{
+  "denoise_gaussian.pt": "d8a1d15264eccc853fcdb28618d921e1d054dd54c99b2bdbdfcc7949b9fe98da",
+  "denoise_sp.pt": "9f02fb4e6c79912ab34a2fda7e4ed88da7572d0bfd295708886515c4d71ba1c8",
+  "denoise_speckle.pt": "d3371028ca984eafc2f6ef3e643ffd58ee585f98b7f9d0317289d042b186c173",
+  "denoising_gaussian_high.pth": "ebc4403c42c7c60294dcef9f6e9131212fe1bfbdc8a67ce9923070a8f392951c",
+  "denoising_gaussian_low.pth": "f9f796d7d6ebcc2f84f4d5cef22e434b63934ff52155021ecff3a8e0c4be7d88",
+  "denoising_gaussian_medium.pth": "030fdbc5e5432891245cf41f42eba8032411b4328e5e89a66dc6c64bd964f2da",
+  "denoising_salt-and-pepper_high.pth": "b725428dac3c8a4c4d7fa081fbf8c61ef58cb800f1e2a327bf88fb7bc3cb5882",
+  "denoising_salt-and-pepper_low.pth": "bb1e23216209672808bc8daba17a97fe6aa9ea950e7ad1287f7c846891b34fb2",
+  "denoising_salt-and-pepper_medium.pth": "d2abfce9d3cfe0d98bc3d1bbd4171386c43be101aa97907171f8b70318812203",
+  "denoising_speckle_high.pth": "9284f5857a6118219d6564c65f9f184acc2acf74fd55190727d21aa6a06b0388",
+  "denoising_speckle_low.pth": "60e770b041cf2d90dcef28e7222fb438798ae0420590e5a6180d5ab3f0a58e44",
+  "denoising_speckle_medium.pth": "39a85627c030bfd3f08c79ee2f9d6f6ad4f8e82b1dfd80a6dcb030b8cabf2d18",
+  "noise_detector.pt": "7b3f96b0065c5111f0255c879a176ed795a13fc9350c3497286b8fd876540fe1"
+}
