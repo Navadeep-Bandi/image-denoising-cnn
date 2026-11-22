@@ -97,5 +97,4 @@ Bandi Navadeep, Rajan Nayak, Rohit - Department of Artificial Intelligence and D
 
 ## License
 
-No license has been chosen yet, so all rights remain with the authors. Add a `LICENSE` file (for example MIT) if you want
-others to reuse the code.
+No license has been chosen yet, so all rights remain with the authors.
