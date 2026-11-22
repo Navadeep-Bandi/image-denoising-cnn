@@ -1,0 +1,18 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy pandas scipy
+      - name: Syntax check
+        run: python -m compileall -q src app.py run_all_experiments.py paper/analysis
+      - name: Regenerate paper tables from archived results
+        run: |
+          mkdir -p /tmp/tables
+          cd paper/analysis && python make_tables.py ../../results /tmp/tables
+          test -s /tmp/tables/tab_stats_rows.tex && test -s /tmp/tables/tab_severity_rows.tex
