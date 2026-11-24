@@ -36,7 +36,7 @@ Full tables and failure cases: [`docs/RESULTS.md`](docs/RESULTS.md). These resul
 git clone https://github.com/Navadeep-Bandi/image-denoising-cnn.git
 cd image-denoising-cnn
 python -m venv .venv
-# Windows: .venv\\Scripts\\activate      macOS/Linux: source .venv/bin/activate
+# Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 python -m streamlit run app.py
 ```
@@ -47,7 +47,7 @@ Trained checkpoints are included in `models/`, so the app runs without any downl
 
 **A Noise-Adaptive Patch-Based Image Restoration Pipeline: Overlap-Weighted Reconstruction, Boundary Behaviour and Cost**
 
-The IEEE-format paper source, generated tables and analysis scripts are maintained in [`paper/`](paper/). The compiled paper is available as a [downloadable PDF](docs/Research_paper.pdf). Open [`paper/main.tex`](paper/main.tex) to inspect the manuscript or upload the `paper/` folder to Overleaf to compile it. Search for `\\todo{` in the LaTeX source for author items that still require verification.
+The IEEE-format paper source, generated tables and analysis scripts are maintained in [`paper/`](paper/). The compiled paper is available as a [downloadable PDF](docs/Research_paper.pdf). Open [`paper/main.tex`](paper/main.tex) to inspect the manuscript or upload the `paper/` folder to Overleaf to compile it. Search for `\todo{` in the LaTeX source for author items that still require verification.
 
 ## Supporting materials
 
