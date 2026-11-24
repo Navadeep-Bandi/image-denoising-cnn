@@ -111,6 +111,4 @@ being crossed. This is a single-noise synthetic test; it says nothing about mixe
 
 ## 9. Limitations
 
-20 images at full resolution; synthetic single-family noise only; no mixed-noise, real-noise or cross-dataset test; single
-timed run per case on unrecorded hardware; training scripts are not in this repository, and the Basic CNN (2 epochs) and DnCNN (40 epochs) were trained with very different budgets
-repository; no matched comparison with SwinIR / Restormer / NAFNet / PromptIR / MambaIR.
+20 images at full resolution; synthetic single-family noise only; no mixed-noise, real-noise or cross-dataset test; single timed run per case on unrecorded hardware; training scripts are not in this repository, and the Basic CNN (2 epochs) and DnCNN (40 epochs) were trained with very different budgets; no matched comparison with SwinIR / Restormer / NAFNet / PromptIR / MambaIR.
