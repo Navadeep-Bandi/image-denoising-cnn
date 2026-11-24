@@ -384,6 +384,17 @@ def detect_and_denoise(noisy_tensor, detector, threshold=0.5):
    
 
 
+
+# --- RESEARCH & PROJECT RESOURCES ---
+with st.sidebar:
+    with st.expander("📚 Research & Sources", expanded=False):
+        st.markdown("**A Noise-Adaptive Patch-Based Image Restoration Pipeline**")
+        st.markdown("[📄 Read the research paper (PDF)](https://github.com/Navadeep-Bandi/image-denoising-cnn/blob/full-project-update/docs/Research_paper.pdf)")
+        st.markdown("[📊 Experimental results](https://github.com/Navadeep-Bandi/image-denoising-cnn/blob/full-project-update/docs/RESULTS.md)")
+        st.markdown("[🧪 Training protocol](https://github.com/Navadeep-Bandi/image-denoising-cnn/blob/full-project-update/docs/TRAINING_PROTOCOL.md)")
+        st.markdown("[💻 Source code](https://github.com/Navadeep-Bandi/image-denoising-cnn/tree/full-project-update/src)")
+        st.markdown("[📦 GitHub repository](https://github.com/Navadeep-Bandi/image-denoising-cnn)")
+
 # --- UI HEADER & BADGES ---
 st.markdown("<h1>✨ AI-Powered Image Denoising Suite</h1>", unsafe_allow_html=True)
 st.markdown("<p style='color: #64748b; font-size: 1.05rem; margin-top: -10px;'>Advanced multi-label convolutional noise detection and high-fidelity artifact restoration.</p>", unsafe_allow_html=True)
