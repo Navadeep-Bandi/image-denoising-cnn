@@ -3,10 +3,6 @@
 [![CI](https://github.com/Navadeep-Bandi/image-denoising-cnn/actions/workflows/ci.yml/badge.svg)](https://github.com/Navadeep-Bandi/image-denoising-cnn/actions/workflows/ci.yml)
 
 A PyTorch project that restores images corrupted by **Gaussian, salt-and-pepper or speckle noise**. A multi-label CNN detector estimates which noise types are present, noise-specific **DnCNN** denoisers remove them, and full-resolution images are rebuilt from 128x128 patches with **Hann-weighted overlap-add**. The repository contains the code, trained checkpoints, archived experiment results, a Streamlit app, the IEEE research-paper source and presentation slides.
-A PyTorch project that restores images corrupted by **Gaussian, salt-and-pepper or speckle noise**. A multi-label CNN detector
-estimates which noise types are present, noise-specific **DnCNN** denoisers remove them, and full-resolution images are
-rebuilt from 128x128 patches with **Hann-weighted overlap-add**. The repository contains the code, trained checkpoints,
-archived experiment results, a Streamlit app, a research paper (LaTeX) and presentation slides.
 
 ```mermaid
 flowchart LR
