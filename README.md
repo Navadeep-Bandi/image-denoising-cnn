@@ -83,9 +83,9 @@ docs/                       RESULTS.md, TRAINING_PROTOCOL.md, archive/ (earlier 
 ## Reproducibility and limitations
 
 - Timing is a **single run per case**, hardware and library versions were not recorded, and each experiment was timed in its own pass; compare times within one table only.
-- The **training scripts are not in this repository** (see [`docs/TRAINING_PROTOCOL.md`](docs/TRAINING_PROTOCOL.md) for what the shared code does specify). Optimizer, epochs and the origin of the clean training images are undocumented.
+- The **training scripts are not in this repository** (see [`docs/TRAINING_PROTOCOL.md`](docs/TRAINING_PROTOCOL.md) for what the shared code does specify). Denoiser optimizer settings are documented in that file; the detector's training settings and the origin of the clean training images are still undocumented.
 - Dependencies are not version-pinned; checkpoint SHA-256 hashes are in `results/experiments/preflight_checkpoint_sha256.json`.
-- The Basic CNN and DnCNN were trained differently, so their gap is not an architecture-only comparison.
+- The Basic CNN (2 epochs) and DnCNN (40 epochs) had very different training budgets, so their gap is not an architecture-only comparison.
 - Detector scores are not calibrated probabilities.
 - No comparison against SwinIR, Restormer, NAFNet, PromptIR or MambaIR was run.
 
